@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
+        Permission::create(['name' => 'manage barang']);
         Permission::create(['name' => 'delete barang']);
         Permission::create(['name' => 'view kategori']);
         Permission::create(['name' => 'manage kategori']);

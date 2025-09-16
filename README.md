@@ -1,33 +1,222 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 InvenBar - Sistem Inventaris Barang
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11">
+    <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+">
+    <img src="https://img.shields.io/badge/Bootstrap-5.3-purple?style=for-the-badge&logo=bootstrap" alt="Bootstrap 5">
+    <img src="https://img.shields.io/badge/MySQL-8.0-orange?style=for-the-badge&logo=mysql" alt="MySQL">
 </p>
 
-## About Laravel
+## 📋 Tentang InvenBar
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**InvenBar** adalah sistem manajemen inventaris barang berbasis web yang dibangun menggunakan Laravel 11. Sistem ini dirancang untuk membantu organisasi dalam mengelola data inventaris barang dengan mudah dan efisien.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 🔐 **Sistem Autentikasi & Otorisasi**
+  - Login/Register dengan Laravel Breeze
+  - Role-based access control (Admin & Petugas)
+  - Permission management dengan Spatie Laravel Permission
 
-## Learning Laravel
+- 📊 **Dashboard Informatif**
+  - Statistik total barang, kategori, dan lokasi
+  - Ringkasan kondisi barang
+  - Tampilan kartu responsif
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- 🏷️ **Manajemen Kategori**
+  - CRUD kategori barang
+  - Validasi duplikasi nama kategori
+  - Pengecekan kategori yang masih digunakan
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- 📍 **Manajemen Lokasi**
+  - CRUD lokasi penyimpanan
+  - Validasi lokasi unik
+  - Protection untuk lokasi yang masih memiliki barang
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- 📦 **Manajemen Barang**
+  - CRUD lengkap untuk data barang
+  - Upload dan manajemen gambar barang
+  - Filter dan pencarian data
+  - Pagination untuk performa optimal
+
+- 👥 **Manajemen User**
+  - CRUD user (khusus admin)
+  - Assign role ke user
+  - Protection untuk mencegah user menghapus dirinya sendiri
+
+- 📄 **Laporan PDF**
+  - Generate laporan inventaris dalam format PDF
+  - Styling profesional dengan DomPDF
+  - Ringkasan statistik lengkap
+
+### 🛠️ Teknologi Yang Digunakan
+
+- **Backend**: Laravel 11.x
+- **Frontend**: Bootstrap 5.3, Blade Templates
+- **Database**: MySQL 8.0
+- **Authentication**: Laravel Breeze
+- **Permissions**: Spatie Laravel Permission
+- **PDF Generation**: DomPDF (barryvdh/laravel-dompdf)
+- **File Storage**: Laravel Storage with custom disk
+
+## 🚀 Instalasi
+
+### Persyaratan Sistem
+
+- PHP 8.2 atau lebih tinggi
+- Composer
+- Node.js & NPM
+- MySQL 8.0
+- Web server (Apache/Nginx/Laragon)
+
+### Langkah Instalasi
+
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/username/invenbar.git
+   cd invenbar
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
+
+3. **Konfigurasi Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Konfigurasi Database**
+   Edit file `.env` dan sesuaikan konfigurasi database:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=invenbar
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. **Migrasi Database & Seeding**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+6. **Storage Link**
+   ```bash
+   php artisan storage:link
+   ```
+
+7. **Publish DomPDF Config**
+   ```bash
+   php artisan vendor:publish --provider="Barryvdh\DomPDF\ServiceProvider"
+   ```
+
+8. **Jalankan Server**
+   ```bash
+   php artisan serve
+   ```
+
+## 🔑 Default Login
+
+Setelah seeding, gunakan akun berikut untuk login:
+
+**Admin:**
+- Email: `admin@mail.com`
+- Password: `password`
+
+**Petugas:**
+- Email: `petugas@mail.com`
+- Password: `password`
+
+## 📁 Struktur Proyek
+
+```
+invenbar/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── BarangController.php
+│   │   ├── DashboardController.php
+│   │   ├── KategoriController.php
+│   │   ├── LokasiController.php
+│   │   └── UserController.php
+│   └── Models/
+│       ├── Barang.php
+│       ├── Kategori.php
+│       ├── Lokasi.php
+│       └── User.php
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/
+│   ├── views/
+│   │   ├── barang/
+│   │   ├── dashboard/
+│   │   ├── kategori/
+│   │   ├── lokasi/
+│   │   ├── user/
+│   │   ├── components/
+│   │   └── layouts/
+│   └── css/
+└── storage/
+    └── app/
+        └── public/
+            └── gambar-barang/
+```
+
+## 🔒 Permissions & Roles
+
+### Roles:
+- **Admin**: Akses penuh ke semua fitur
+- **Petugas**: Akses terbatas ke manajemen barang
+
+### Permissions:
+- `view kategori` - Melihat data kategori
+- `manage kategori` - Kelola kategori (CRUD)
+- `view lokasi` - Melihat data lokasi  
+- `manage lokasi` - Kelola lokasi (CRUD)
+- `view barang` - Melihat data barang
+- `manage barang` - Kelola barang (CRUD)
+
+## 📱 Fitur Responsive
+
+InvenBar dibangun dengan Bootstrap 5 yang memastikan tampilan yang optimal di berbagai ukuran layar:
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (< 768px)
+
+## 🤝 Kontribusi
+
+Kontribusi sangat diterima! Silakan:
+
+1. Fork repository ini
+2. Buat branch feature (`git checkout -b feature/amazing-feature`)
+3. Commit perubahan (`git commit -m 'Add amazing feature'`)
+4. Push ke branch (`git push origin feature/amazing-feature`)
+5. Buat Pull Request
+
+## 📝 License
+
+Proyek ini menggunakan lisensi [MIT License](LICENSE).
+
+## 👨‍💻 Developer
+
+Dikembangkan dengan ❤️ menggunakan Laravel 11
+
+---
+
+<p align="center">
+Made with ❤️ by <strong>InvenBar Team</strong>
+</p>
+
+---
+
+<p align="center">
+Made with ❤️ by <strong>InvenBar Team</strong>
+</p>
 
 ## Laravel Sponsors
 
