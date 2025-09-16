@@ -40,7 +40,7 @@ class KategoriController extends Controller implements HasMiddleware
     public function create()
     {
         $kategori = new Kategori();
-        
+
         return view('kategori.create', compact('kategori'));
     }
 

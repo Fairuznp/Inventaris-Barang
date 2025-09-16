@@ -149,10 +149,10 @@ class BarangController extends Controller implements HasMiddleware
     public function cetakLaporan()
     {
         $barangs = Barang::with(['kategori', 'lokasi'])->get();
-        
+
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('barang.laporan', compact('barangs'));
-        
+
         return $pdf->stream('laporan-barang.pdf');
     }
 }

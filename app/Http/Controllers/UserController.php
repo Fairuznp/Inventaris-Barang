@@ -30,7 +30,7 @@ class UserController extends Controller implements HasMiddleware
         $users = User::with('roles')
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', '%' . $search . '%')
-                      ->orWhere('email', 'like', '%' . $search . '%');
+                    ->orWhere('email', 'like', '%' . $search . '%');
             })
             ->orderBy('name')
             ->paginate(10)->withQueryString();
