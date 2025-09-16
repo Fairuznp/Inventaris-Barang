@@ -34,7 +34,7 @@ class BarangSeeder extends Seeder
                 'lokasi_id' => 1,
                 'jumlah' => 1,
                 'satuan' => 'Unit',
-                'kondisi' => 'Rusak',
+                'kondisi' => 'Rusak Berat',
                 'tanggal_pengadaan' => '2022-11-20',
                 'gambar' => null,
                 'created_at' => now(),

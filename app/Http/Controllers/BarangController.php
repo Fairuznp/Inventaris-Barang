@@ -4,15 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class BarangController extends Controller
+class BarangController extends Controller implements HasMiddleware
 {
+    public static function middleware()
+    {
+        return [
+            new Middleware('permission:manage barang', except: ['destroy']),
+            new Middleware('permission:delete barang', only: ['destroy']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->search;
+
+        $barangs = Barang::with(['kategori', 'lokasi'])
+            ->when($search, function ($query, $search) {
+                $query->where('nama_barang', 'like', '%' . $search . '%')
+                    ->orWhere('kode_barang', 'like', '%' . $search . '%');
+            })
+            ->latest()->paginate(10)->withQueryString();
+
+        return view('barang.index', compact('barangs'));
     }
 
     /**
