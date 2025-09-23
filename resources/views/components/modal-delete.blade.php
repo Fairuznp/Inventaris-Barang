@@ -1,6 +1,6 @@
-<div class="modal fade" id="deleteModal" tabindex="-1">
+<div class="modal fade" id="modalDelete" tabindex="-1">
     <div class="modal-dialog">
-        <form class="modal-content" method="post" action="">
+        <form class="modal-content" method="post" action="" id="deleteForm">
             @csrf
             @method('delete')
 

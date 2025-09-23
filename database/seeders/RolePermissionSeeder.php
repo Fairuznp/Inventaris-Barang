@@ -28,6 +28,7 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::create(['name' => 'admin']);
 
         $petugasRole->givePermissionTo([
+            'manage barang',
             'view kategori',
             'view lokasi',
         ]);

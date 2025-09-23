@@ -14,7 +14,7 @@ class TombolAksi extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct($href, $type)
+    public function __construct($type, $href = null)
     {
         $this->href = $href;
         $this->type = $type;

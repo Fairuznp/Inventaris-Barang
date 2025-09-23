@@ -16,9 +16,7 @@
             @can('manage lokasi')
                 <td>
                     <x-tombol-aksi href="{{ route('lokasi.edit', $lokasi->id) }}" type="edit" />
-                    <x-tombol-aksi href="#" type="delete" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modalDelete" 
+                    <x-tombol-aksi type="delete" 
                         data-name="{{ $lokasi->nama_lokasi }}" 
                         data-url="{{ route('lokasi.destroy', $lokasi->id) }}" />
                 </td>
@@ -39,23 +37,3 @@
         {{ $lokasis->links() }}
     </x-slot>
 </x-table-list>
-
-<x-modal-delete />
-
-@push('scripts')
-<script>
-    // Script untuk modal delete lokasi
-    const modalDelete = document.getElementById('modalDelete');
-    modalDelete.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const name = button.getAttribute('data-name');
-        const url = button.getAttribute('data-url');
-        
-        const modalBody = modalDelete.querySelector('.modal-body');
-        const deleteForm = modalDelete.querySelector('#deleteForm');
-        
-        modalBody.innerHTML = `Apakah Anda yakin ingin menghapus lokasi <strong>"${name}"</strong>?`;
-        deleteForm.action = url;
-    });
-</script>
-@endpush

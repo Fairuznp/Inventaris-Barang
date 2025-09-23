@@ -12,15 +12,6 @@
                             @method('PUT')
                             
                             @include('user.partials._form', ['update' => true])
-                            
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Update
-                                </button>
-                                <a href="{{ route('user.index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left"></i> Kembali
-                                </a>
-                            </div>
                         </form>
                     </div>
                 </div>

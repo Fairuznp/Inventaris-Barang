@@ -32,17 +32,33 @@
             </div>
         </main>
     </div>
+    
     <x-modal-delete />
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        const deleteModal = document.getElementById('deleteModal')
-        deleteModal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget
-            const url = button.getAttribute('data-target')
-            const form = deleteModal.querySelector('form')
-            deleteForm.setAttribute('action', url)
-        })
+        // Script untuk modal delete universal
+        const modalDelete = document.getElementById('modalDelete');
+        if (modalDelete) {
+            modalDelete.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const name = button.getAttribute('data-name');
+                const url = button.getAttribute('data-url');
+                
+                const modalBody = modalDelete.querySelector('.modal-body');
+                const deleteForm = modalDelete.querySelector('#deleteForm');
+                
+                if (name && modalBody) {
+                    modalBody.innerHTML = `Apakah Anda yakin ingin menghapus <strong>"${name}"</strong>?`;
+                }
+                
+                if (url && deleteForm) {
+                    deleteForm.action = url;
+                }
+            });
+        }
+    </script>
     </script>
 </body>
 </html>

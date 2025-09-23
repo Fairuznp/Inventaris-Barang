@@ -1,4 +1,4 @@
-@props(['href', 'type'])
+@props(['href' => null, 'type'])
 
 @php
 $configs = [
@@ -23,8 +23,8 @@ $config = $configs[$type] ?? $configs['show'];
         @break
 
     @case('delete')
-        <button type="button" data-url="{{ $href }}" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-            data-bs-target="#deleteModal">
+        <button type="button" {{ $attributes->merge(['class' => 'btn btn-sm btn-danger']) }} 
+            data-bs-toggle="modal" data-bs-target="#modalDelete">
             <i class="bi bi-x-circle"></i>
         </button>
         @break
