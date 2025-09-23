@@ -19,11 +19,27 @@
                         </div>
                     </div>
                     
-                    <!-- Status Badge -->
-                    <span class="badge rounded-pill px-3 py-2" 
-                          style="background: rgba(59, 130, 246, 0.1); color: #1a1a1a; font-size: 0.75rem; font-weight: 500;">
-                        {{ $barang->kondisi }}
-                    </span>
+                    <!-- Kondisi Badges -->
+                    <div class="d-flex gap-1 flex-wrap">
+                        @if($barang->jumlah_baik > 0)
+                        <span class="badge rounded-pill px-2 py-1" 
+                              style="background: #1a1a1a; color: #fafafa; font-size: 0.7rem; font-weight: 600;">
+                            {{ $barang->jumlah_baik }} Baik
+                        </span>
+                        @endif
+                        @if($barang->jumlah_rusak_ringan > 0)
+                        <span class="badge rounded-pill px-2 py-1" 
+                              style="background: #6b7280; color: #fafafa; font-size: 0.7rem; font-weight: 600;">
+                            {{ $barang->jumlah_rusak_ringan }} Rusak Ringan
+                        </span>
+                        @endif
+                        @if($barang->jumlah_rusak_berat > 0)
+                        <span class="badge rounded-pill px-2 py-1" 
+                              style="background: #f3f4f6; color: #1a1a1a; font-size: 0.7rem; font-weight: 600; border: 1px solid #6b7280;">
+                            {{ $barang->jumlah_rusak_berat }} Rusak Berat
+                        </span>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- Card Body -->
@@ -58,10 +74,10 @@
                         <div class="col-12">
                             <div class="d-flex flex-column">
                                 <span class="small fw-medium" style="color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    Jumlah Stok
+                                    Total Stok
                                 </span>
                                 <span class="fw-bold mt-1 d-flex align-items-center" style="color: #1a1a1a; font-size: 1.25rem;">
-                                    {{ $barang->jumlah }}
+                                    {{ $barang->jumlah_stok }}
                                     <span class="ms-2 fw-normal" style="font-size: 0.875rem; color: #6b7280;">
                                         {{ $barang->satuan }}
                                     </span>

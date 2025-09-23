@@ -60,12 +60,20 @@ class BarangController extends Controller implements HasMiddleware
             'nama_barang' => 'required|string|max:150',
             'kategori_id' => 'required|exists:kategoris,id',
             'lokasi_id' => 'required|exists:lokasis,id',
-            'jumlah' => 'required|integer|min:0',
+            'jumlah_baik' => 'required|integer|min:0',
+            'jumlah_rusak_ringan' => 'required|integer|min:0',
+            'jumlah_rusak_berat' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
             'tanggal_pengadaan' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Validasi tambahan: minimal ada 1 barang
+        $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];
+        if ($totalBarang <= 0) {
+            return back()->withErrors(['jumlah_baik' => 'Total jumlah barang harus lebih dari 0'])
+                        ->withInput();
+        }
 
         if ($request->hasFile('gambar')) {
             $validated['gambar'] = $request->file('gambar')->store(null, 'gambar-barang');
@@ -108,12 +116,20 @@ class BarangController extends Controller implements HasMiddleware
             'nama_barang' => 'required|string|max:150',
             'kategori_id' => 'required|exists:kategoris,id',
             'lokasi_id' => 'required|exists:lokasis,id',
-            'jumlah' => 'required|integer|min:0',
+            'jumlah_baik' => 'required|integer|min:0',
+            'jumlah_rusak_ringan' => 'required|integer|min:0',
+            'jumlah_rusak_berat' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
-            'kondisi' => 'required|in:Baik,Rusak Ringan,Rusak Berat',
             'tanggal_pengadaan' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Validasi tambahan: minimal ada 1 barang
+        $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];
+        if ($totalBarang <= 0) {
+            return back()->withErrors(['jumlah_baik' => 'Total jumlah barang harus lebih dari 0'])
+                        ->withInput();
+        }
 
         if ($request->hasFile('gambar')) {
             if ($barang->gambar) {

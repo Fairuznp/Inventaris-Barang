@@ -3,9 +3,7 @@
         <tr>
             <th style="width: 8%">#</th>
             <th style="width: 70%">Nama Lokasi</th>
-            @can('manage lokasi')
-                <th style="width: 22%">Aksi</th>
-            @endcan
+            <th style="width: 22%">Aksi</th>
         </tr>
     </x-slot>
 
@@ -15,10 +13,15 @@
             <td>{{ $lokasi->nama_lokasi }}</td>
             @can('manage lokasi')
                 <td>
+                    <x-tombol-aksi href="{{ route('lokasi.show', $lokasi->id) }}" type="show" />
                     <x-tombol-aksi href="{{ route('lokasi.edit', $lokasi->id) }}" type="edit" />
                     <x-tombol-aksi type="delete" 
                         data-name="{{ $lokasi->nama_lokasi }}" 
                         data-url="{{ route('lokasi.destroy', $lokasi->id) }}" />
+                </td>
+            @else
+                <td>
+                    <x-tombol-aksi href="{{ route('lokasi.show', $lokasi->id) }}" type="show" />
                 </td>
             @endcan
         </tr>

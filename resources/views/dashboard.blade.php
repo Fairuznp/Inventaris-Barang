@@ -143,7 +143,7 @@
                     <div class="card-header-modern">
                         <h6>
                             <i class="bi-pie-chart"></i>
-                            Ringkasan Kondisi Barang
+                            Ringkasan Stok per Kondisi
                         </h6>
                     </div>
                     @include('dashboard-partials.list-kondisi-barang')
