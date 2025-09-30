@@ -128,7 +128,7 @@ class CacheService
             'pemeliharaan_statistics_v3',
             'barangs_rusak_for_pemeliharaan_v2'
         ]);
-        
+
         // Clear pagination cache
         self::forgetMatching('pemeliharaan_list_*');
     }

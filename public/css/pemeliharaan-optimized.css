@@ -24,12 +24,30 @@
     text-transform: uppercase;
 }
 
-.status-dikirim { background: #dbeafe; color: #1e40af; }
-.status-dalam_perbaikan { background: #fef3c7; color: #d97706; }
-.status-menunggu_approval { background: #fed7aa; color: #ea580c; }
-.status-selesai { background: #1a1a1a; color: #fafafa; }
-.status-dibatalkan { background: #f3f4f6; color: #6b7280; }
-.status-tidak_bisa_diperbaiki { background: #fee2e2; color: #dc2626; }
+.status-dikirim {
+    background: #dbeafe;
+    color: #1e40af;
+}
+.status-dalam_perbaikan {
+    background: #fef3c7;
+    color: #d97706;
+}
+.status-menunggu_approval {
+    background: #fed7aa;
+    color: #ea580c;
+}
+.status-selesai {
+    background: #1a1a1a;
+    color: #fafafa;
+}
+.status-dibatalkan {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+.status-tidak_bisa_diperbaiki {
+    background: #fee2e2;
+    color: #dc2626;
+}
 
 /* Simple jenis badges */
 .jenis-badge {
@@ -39,8 +57,14 @@
     font-weight: 500;
 }
 
-.jenis-rusak_ringan { background: #fef3c7; color: #d97706; }
-.jenis-rusak_berat { background: #fee2e2; color: #dc2626; }
+.jenis-rusak_ringan {
+    background: #fef3c7;
+    color: #d97706;
+}
+.jenis-rusak_berat {
+    background: #fee2e2;
+    color: #dc2626;
+}
 
 /* Lightweight stats cards */
 .stats-card {
