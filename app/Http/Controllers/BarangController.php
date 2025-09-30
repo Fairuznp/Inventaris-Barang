@@ -27,12 +27,16 @@ class BarangController extends Controller implements HasMiddleware
     {
         $search = $request->search;
 
-        $barangs = Barang::with(['kategori', 'lokasi'])
-            ->when($search, function ($query, $search) {
-                $query->where('nama_barang', 'like', '%' . $search . '%')
-                    ->orWhere('kode_barang', 'like', '%' . $search . '%');
-            })
-            ->latest()->paginate(10)->withQueryString();
+        $barangs = Barang::select([
+                'id', 'kode_barang', 'nama_barang', 'kategori_id', 'lokasi_id',
+                'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 
+                'jumlah_total', 'satuan', 'gambar', 'created_at'
+            ])
+            ->withOptimizedRelations()
+            ->search($search)
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
 
         return view('barang.index', compact('barangs'));
     }
@@ -72,12 +76,20 @@ class BarangController extends Controller implements HasMiddleware
         $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];
         if ($totalBarang <= 0) {
             return back()->withErrors(['jumlah_baik' => 'Total jumlah barang harus lebih dari 0'])
-                        ->withInput();
+                ->withInput();
         }
 
+        // Optimasi upload gambar dengan kompres
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store(null, 'gambar-barang');
+            $file = $request->file('gambar');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            
+            // Simpan dengan nama yang dioptimasi
+            $validated['gambar'] = $file->storeAs('', $filename, 'gambar-barang');
         }
+
+        // Set total otomatis
+        $validated['jumlah_total'] = $totalBarang;
 
         Barang::create($validated);
 
@@ -128,7 +140,7 @@ class BarangController extends Controller implements HasMiddleware
         $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];
         if ($totalBarang <= 0) {
             return back()->withErrors(['jumlah_baik' => 'Total jumlah barang harus lebih dari 0'])
-                        ->withInput();
+                ->withInput();
         }
 
         if ($request->hasFile('gambar')) {

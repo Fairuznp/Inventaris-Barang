@@ -113,6 +113,16 @@
         background-color: #f8f9fa;
     }
 
+    .kondisi-detail {
+        font-size: 9px;
+        line-height: 1.3;
+    }
+
+    .kondisi-detail div {
+        margin-bottom: 1px;
+        padding: 1px 0;
+    }
+
     .summary {
         margin-top: 15px;
         padding: 10px;

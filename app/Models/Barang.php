@@ -12,7 +12,36 @@ class Barang extends Model
     protected $guarded = ['id'];
     protected $casts = [
         'tanggal_pengadaan' => 'date',
+        'jumlah_baik' => 'integer',
+        'jumlah_rusak_ringan' => 'integer',
+        'jumlah_rusak_berat' => 'integer',
+        'jumlah_total' => 'integer',
     ];
+
+    /**
+     * Scope untuk pencarian yang dioptimasi
+     */
+    public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('nama_barang', 'like', '%' . $search . '%')
+                  ->orWhere('kode_barang', 'like', '%' . $search . '%');
+            });
+        }
+        return $query;
+    }
+
+    /**
+     * Scope untuk data dengan relasi yang dioptimasi
+     */
+    public function scopeWithOptimizedRelations($query)
+    {
+        return $query->with([
+            'kategori:id,nama_kategori',
+            'lokasi:id,nama_lokasi'
+        ]);
+    }
 
     /**
      * Accessor untuk mendapatkan total jumlah stok
@@ -58,5 +87,37 @@ class Barang extends Model
     public function lokasi(): BelongsTo
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
+
+    /**
+     * Relasi ke Peminjaman
+     */
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class);
+    }
+
+    /**
+     * Relasi ke Peminjaman yang masih aktif
+     */
+    public function peminjamanAktif()
+    {
+        return $this->hasMany(Peminjaman::class)->where('status', 'dipinjam');
+    }
+
+    /**
+     * Accessor untuk total barang yang sedang dipinjam
+     */
+    public function getTotalDipinjamAttribute()
+    {
+        return $this->peminjamanAktif()->sum('jumlah');
+    }
+
+    /**
+     * Accessor untuk stok baik yang tersedia (belum dipinjam)
+     */
+    public function getStokBaikTersediaAttribute()
+    {
+        return max(0, $this->jumlah_baik - $this->total_dipinjam);
     }
 }

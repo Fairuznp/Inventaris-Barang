@@ -51,7 +51,7 @@
                 </div>
                 <div class="col-4">
                     <div class="p-3 rounded" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.1);">
-                        <div style="color: #d97706; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">Kondisi Baik</div>
+                        <div style="color: #d97706; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">Kondisi Rusak Ringan</div>
                         <div class="fw-bold" style="color: #d97706; font-size: 1.25rem;">
                             {{ $barang->jumlah_rusak_ringan}}
                         </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-4">
                     <div class="p-3 rounded" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
-                        <div style="color: #dc2626; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">Kondisi Baik</div>
+                        <div style="color: #dc2626; font-size: 0.75rem; font-weight: 500; text-transform: uppercase;">Kondisi Rusak Berat</div>
                         <div class="fw-bold" style="color: #dc2626; font-size: 1.25rem;">
                             {{ $barang->jumlah_rusak_berat }}
                         </div>

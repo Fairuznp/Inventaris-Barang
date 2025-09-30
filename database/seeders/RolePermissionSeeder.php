@@ -23,6 +23,8 @@ class RolePermissionSeeder extends Seeder
         Permission::create(['name' => 'manage kategori']);
         Permission::create(['name' => 'view lokasi']);
         Permission::create(['name' => 'manage lokasi']);
+        Permission::create(['name' => 'view peminjaman']);
+        Permission::create(['name' => 'manage peminjaman']);
 
         $petugasRole = Role::create(['name' => 'petugas']);
         $adminRole = Role::create(['name' => 'admin']);
@@ -31,6 +33,8 @@ class RolePermissionSeeder extends Seeder
             'manage barang',
             'view kategori',
             'view lokasi',
+            'view peminjaman',
+            'manage peminjaman',
         ]);
         $adminRole->givePermissionTo(Permission::all());
     }
