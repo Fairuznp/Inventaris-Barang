@@ -27,14 +27,14 @@ class LaporanController extends Controller
     public function kategori(Request $request)
     {
         $search = $request->get('search');
-        
+
         $kategoris = Kategori::withCount('barangs')
             ->when($search, function ($query, $search) {
                 return $query->where('nama_kategori', 'like', '%' . $search . '%');
             })
             ->with(['barangs' => function ($query) {
                 $query->select('id', 'nama_barang', 'kode_barang', 'kategori_id', 'jumlah_total', 'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'satuan')
-                      ->orderBy('nama_barang');
+                    ->orderBy('nama_barang');
             }])
             ->orderBy('nama_kategori')
             ->paginate(10);
@@ -48,14 +48,14 @@ class LaporanController extends Controller
     public function lokasi(Request $request)
     {
         $search = $request->get('search');
-        
+
         $lokasis = Lokasi::withCount('barangs')
             ->when($search, function ($query, $search) {
                 return $query->where('nama_lokasi', 'like', '%' . $search . '%');
             })
             ->with(['barangs' => function ($query) {
                 $query->select('id', 'nama_barang', 'kode_barang', 'lokasi_id', 'jumlah_total', 'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'satuan')
-                      ->orderBy('nama_barang');
+                    ->orderBy('nama_barang');
             }])
             ->orderBy('nama_lokasi')
             ->paginate(10);
@@ -94,11 +94,11 @@ class LaporanController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('nama_peminjam', 'like', '%' . $search . '%')
-                      ->orWhere('instansi_peminjam', 'like', '%' . $search . '%')
-                      ->orWhereHas('barang', function ($barangQuery) use ($search) {
-                          $barangQuery->where('nama_barang', 'like', '%' . $search . '%')
-                                      ->orWhere('kode_barang', 'like', '%' . $search . '%');
-                      });
+                        ->orWhere('instansi_peminjam', 'like', '%' . $search . '%')
+                        ->orWhereHas('barang', function ($barangQuery) use ($search) {
+                            $barangQuery->where('nama_barang', 'like', '%' . $search . '%')
+                                ->orWhere('kode_barang', 'like', '%' . $search . '%');
+                        });
                 });
             })
             ->orderBy('tanggal_pinjam', 'desc')
@@ -146,12 +146,12 @@ class LaporanController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('kode_pemeliharaan', 'like', '%' . $search . '%')
-                      ->orWhere('nama_vendor', 'like', '%' . $search . '%')
-                      ->orWhere('deskripsi_kerusakan', 'like', '%' . $search . '%')
-                      ->orWhereHas('barang', function ($barangQuery) use ($search) {
-                          $barangQuery->where('nama_barang', 'like', '%' . $search . '%')
-                                      ->orWhere('kode_barang', 'like', '%' . $search . '%');
-                      });
+                        ->orWhere('nama_vendor', 'like', '%' . $search . '%')
+                        ->orWhere('deskripsi_kerusakan', 'like', '%' . $search . '%')
+                        ->orWhereHas('barang', function ($barangQuery) use ($search) {
+                            $barangQuery->where('nama_barang', 'like', '%' . $search . '%')
+                                ->orWhere('kode_barang', 'like', '%' . $search . '%');
+                        });
                 });
             })
             ->orderBy('tanggal_kirim', 'desc')
@@ -175,12 +175,12 @@ class LaporanController extends Controller
     {
         $kategoris = Kategori::with(['barangs' => function ($query) {
             $query->select('id', 'nama_barang', 'kode_barang', 'kategori_id', 'jumlah_total', 'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'satuan')
-                  ->orderBy('nama_barang');
+                ->orderBy('nama_barang');
         }])->orderBy('nama_kategori')->get();
 
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('laporan.export.kategori-pdf', compact('kategoris'));
-        
+
         return $pdf->download('laporan-kategori-' . date('Y-m-d') . '.pdf');
     }
 
@@ -191,12 +191,12 @@ class LaporanController extends Controller
     {
         $lokasis = Lokasi::with(['barangs' => function ($query) {
             $query->select('id', 'nama_barang', 'kode_barang', 'lokasi_id', 'jumlah_total', 'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'satuan')
-                  ->orderBy('nama_barang');
+                ->orderBy('nama_barang');
         }])->orderBy('nama_lokasi')->get();
 
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('laporan.export.lokasi-pdf', compact('lokasis'));
-        
+
         return $pdf->download('laporan-lokasi-' . date('Y-m-d') . '.pdf');
     }
 
@@ -239,7 +239,7 @@ class LaporanController extends Controller
 
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('laporan.export.peminjaman-pdf', compact('peminjamans', 'summary', 'tanggal_mulai', 'tanggal_selesai'));
-        
+
         return $pdf->download('laporan-peminjaman-' . date('Y-m-d') . '.pdf');
     }
 
@@ -282,7 +282,7 @@ class LaporanController extends Controller
 
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('laporan.export.pemeliharaan-pdf', compact('pemeliharaans', 'summary', 'tanggal_mulai', 'tanggal_selesai'));
-        
+
         return $pdf->download('laporan-pemeliharaan-' . date('Y-m-d') . '.pdf');
     }
 }

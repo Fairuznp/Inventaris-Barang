@@ -15,7 +15,7 @@ class BarangSeederNew extends Seeder
     {
         // Hapus data lama tanpa truncate untuk menghindari foreign key constraint
         DB::table('barangs')->delete();
-        
+
         DB::table('barangs')->insert([
             [
                 'kode_barang' => 'LP001',

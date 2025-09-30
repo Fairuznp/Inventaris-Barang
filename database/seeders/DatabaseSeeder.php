@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@mail.com',
             'password' => bcrypt('password123'),
         ]);
-        
+
         $petugas = User::factory()->create([
             'name' => 'Petugas Inventaris',
             'email' => 'petugas@mail.com',
@@ -30,13 +30,13 @@ class DatabaseSeeder extends Seeder
             // Seeder untuk data master
             KategoriSeeder::class,
             LokasiSeeder::class,
-            
+
             // Seeder untuk roles dan permissions
             RolePermissionSeeder::class,
-            
+
             // Seeder untuk data barang (gunakan yang sudah diupdate dengan struktur baru)
             BarangSeederNew::class,
-            
+
             // Seeder untuk transaksi (setelah user dibuat)
             PeminjamanSeeder::class,
             PemeliharaanSeeder::class,

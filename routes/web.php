@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/lokasi', [LaporanController::class, 'lokasi'])->name('lokasi');
         Route::get('/peminjaman', [LaporanController::class, 'peminjaman'])->name('peminjaman');
         Route::get('/pemeliharaan', [LaporanController::class, 'pemeliharaan'])->name('pemeliharaan');
-        
+
         // Export Routes
         Route::get('/kategori/export-pdf', [LaporanController::class, 'exportKategoriPdf'])->name('kategori.export-pdf');
         Route::get('/lokasi/export-pdf', [LaporanController::class, 'exportLokasiPdf'])->name('lokasi.export-pdf');
