@@ -40,6 +40,7 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah_rusak_berat',
             'jumlah_total',
             'satuan',
+            'dapat_dipinjam',
             'gambar',
             'created_at'
         ])
@@ -86,8 +87,12 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah_rusak_berat' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'tanggal_pengadaan' => 'required|date',
+            'dapat_dipinjam' => 'boolean',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Set default untuk dapat_dipinjam jika tidak ada
+        $validated['dapat_dipinjam'] = $request->has('dapat_dipinjam');
 
         // Validasi tambahan: minimal ada 1 barang
         $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];
@@ -161,8 +166,12 @@ class BarangController extends Controller implements HasMiddleware
             'jumlah_rusak_berat' => 'required|integer|min:0',
             'satuan' => 'required|string|max:20',
             'tanggal_pengadaan' => 'required|date',
+            'dapat_dipinjam' => 'boolean',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // Set default untuk dapat_dipinjam jika tidak ada
+        $validated['dapat_dipinjam'] = $request->has('dapat_dipinjam');
 
         // Validasi tambahan: minimal ada 1 barang
         $totalBarang = $validated['jumlah_baik'] + $validated['jumlah_rusak_ringan'] + $validated['jumlah_rusak_berat'];

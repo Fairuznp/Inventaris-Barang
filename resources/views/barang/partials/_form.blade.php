@@ -109,6 +109,43 @@
     </div>
 </div>
 
+<!-- Status Dapat Dipinjam -->
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card" style="background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px;">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-handshake me-3" style="color: #2563eb; font-size: 1.2rem;"></i>
+                    <div class="flex-grow-1">
+                        <label class="form-label fw-semibold mb-1" style="color: #2563eb;">
+                            Status Peminjaman
+                        </label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input @error('dapat_dipinjam') is-invalid @enderror" 
+                                   type="checkbox" 
+                                   id="dapat_dipinjam" 
+                                   name="dapat_dipinjam" 
+                                   value="1"
+                                   {{ old('dapat_dipinjam', $barang->dapat_dipinjam ?? true) ? 'checked' : '' }}
+                                   style="font-size: 1.1rem;">
+                            <label class="form-check-label fw-medium" for="dapat_dipinjam" style="color: #374151;">
+                                Barang ini dapat dipinjam
+                            </label>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Jika dinonaktifkan, barang tidak akan muncul dalam daftar peminjaman
+                        </small>
+                        @error('dapat_dipinjam')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="mb-3">
     <x-form-input label="Gambar Barang" name="gambar" type="file" />
 </div>

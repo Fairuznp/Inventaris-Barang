@@ -71,10 +71,11 @@ class PeminjamanController extends Controller implements HasMiddleware
                 'nama_barang',
                 'kode_barang',
                 'jumlah_baik',
-                'satuan'
+                'satuan',
+                'dapat_dipinjam'
             ])
                 ->with(['peminjamanAktif:barang_id,jumlah'])
-                ->where('jumlah_baik', '>', 0)
+                ->availableForLoan() // Hanya barang yang dapat dipinjam dan stok > 0
                 ->orderBy('nama_barang')
                 ->get()
                 ->map(function ($barang) {
@@ -107,6 +108,11 @@ class PeminjamanController extends Controller implements HasMiddleware
         try {
             return DB::transaction(function () use ($validated) {
                 $barang = Barang::lockForUpdate()->findOrFail($validated['barang_id']);
+
+                // Validasi apakah barang dapat dipinjam
+                if (!$barang->dapat_dipinjam) {
+                    throw new \Exception("Barang ini tidak dapat dipinjam.");
+                }
 
                 // Validasi stok baik yang tersedia setelah lock
                 if ($validated['jumlah'] > $barang->stok_baik_tersedia) {

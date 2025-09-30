@@ -16,6 +16,7 @@ class Barang extends Model
         'jumlah_rusak_ringan' => 'integer',
         'jumlah_rusak_berat' => 'integer',
         'jumlah_total' => 'integer',
+        'dapat_dipinjam' => 'boolean',
     ];
 
     /**
@@ -67,6 +68,23 @@ class Barang extends Model
     public function scopeStokRendah($query, $threshold = 10)
     {
         return $query->where('jumlah_total', '<', $threshold);
+    }
+
+    /**
+     * Scope untuk barang yang dapat dipinjam
+     */
+    public function scopeCanBeBorrowed($query)
+    {
+        return $query->where('dapat_dipinjam', true);
+    }
+
+    /**
+     * Scope untuk barang yang tersedia untuk dipinjam (dapat dipinjam dan stok tersedia)
+     */
+    public function scopeAvailableForLoan($query)
+    {
+        return $query->canBeBorrowed()
+            ->where('jumlah_baik', '>', 0);
     }
 
     /**

@@ -44,6 +44,22 @@
 
                 <!-- Card Body -->
                 <div class="card-body" style="padding: 0.75rem 1.25rem 1.25rem;">
+                    <!-- Status Peminjaman -->
+                    <div class="mb-3">
+                        @if($barang->dapat_dipinjam ?? true)
+                            <span class="badge d-inline-flex align-items-center px-3 py-2" 
+                                  style="background: rgba(34, 197, 94, 0.1); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; font-size: 0.75rem; font-weight: 600;">
+                                <i class="fas fa-handshake me-2" style="font-size: 0.7rem;"></i>
+                                Dapat Dipinjam
+                            </span>
+                        @else
+                            <span class="badge d-inline-flex align-items-center px-3 py-2" 
+                                  style="background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; font-size: 0.75rem; font-weight: 600;">
+                                <i class="fas fa-ban me-2" style="font-size: 0.7rem;"></i>
+                                Tidak Dapat Dipinjam
+                            </span>
+                        @endif
+                    </div>
                     <!-- Nama Barang -->
                     <h5 class="card-title mb-3 fw-bold lh-base" style="color: #1a1a1a; font-size: 1.1rem;">
                         {{ $barang->nama_barang }}

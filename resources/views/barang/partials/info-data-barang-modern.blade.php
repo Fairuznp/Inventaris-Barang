@@ -50,6 +50,46 @@
             </div>
         </div>
     </div>
+    
+    <!-- Status Peminjaman Card -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm" style="background: #fafafa; border-radius: 12px;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3" style="color: #1a1a1a;">
+                    <i class="fas fa-handshake me-2" style="color: #6b7280;"></i>
+                    Status Peminjaman
+                </h5>
+                
+                <div class="d-flex align-items-center p-3 rounded" 
+                     style="background: {{ ($barang->dapat_dipinjam ?? true) ? 'rgba(34, 197, 94, 0.05)' : 'rgba(239, 68, 68, 0.05)' }}; 
+                            border: 1px solid {{ ($barang->dapat_dipinjam ?? true) ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)' }};">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" 
+                         style="width: 50px; height: 50px; 
+                                background: {{ ($barang->dapat_dipinjam ?? true) ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }};">
+                        <i class="fas {{ ($barang->dapat_dipinjam ?? true) ? 'fa-handshake' : 'fa-ban' }}" 
+                           style="color: {{ ($barang->dapat_dipinjam ?? true) ? '#16a34a' : '#dc2626' }}; font-size: 1.2rem;"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold mb-1" style="color: {{ ($barang->dapat_dipinjam ?? true) ? '#16a34a' : '#dc2626' }}; font-size: 1.1rem;">
+                            {{ ($barang->dapat_dipinjam ?? true) ? 'Dapat Dipinjam' : 'Tidak Dapat Dipinjam' }}
+                        </div>
+                        <div style="color: #6b7280; font-size: 0.875rem;">
+                            {{ ($barang->dapat_dipinjam ?? true) ? 'Barang ini tersedia untuk dipinjam' : 'Barang ini tidak tersedia untuk dipinjam' }}
+                        </div>
+                        @if($barang->dapat_dipinjam ?? true)
+                            <div class="mt-2">
+                                <small class="badge px-2 py-1" style="background: rgba(34, 197, 94, 0.1); color: #16a34a; border-radius: 6px;">
+                                    <i class="fas fa-check me-1"></i>
+                                    Stok Tersedia: {{ $barang->stok_baik_tersedia }} {{ $barang->satuan }}
+                                </small>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Metadata Card -->
     <div class="col-12">
         <div class="card border-0 shadow-sm" style="background: #fafafa; border-radius: 12px;">
