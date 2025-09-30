@@ -130,17 +130,28 @@
                                 <label for="barang_id" class="form-label">Pilih Barang</label>
                                 <select name="barang_id" id="barang_id" class="form-select @error('barang_id') is-invalid @enderror" required>
                                     <option value="">-- Pilih Barang --</option>
-                                    @foreach ($barangs as $barang)
+                                    @forelse ($barangs as $barang)
                                         <option value="{{ $barang->id }}" 
                                                 data-stok="{{ $barang->stok_tersedia }}"
                                                 {{ old('barang_id') == $barang->id ? 'selected' : '' }}>
                                             {{ $barang->nama_barang }} ({{ $barang->kode_barang }})
                                         </option>
-                                    @endforeach
+                                    @empty
+                                        <option value="" disabled>Tidak ada barang yang dapat dipinjam</option>
+                                    @endforelse
                                 </select>
                                 @error('barang_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                
+                                @if($barangs->isEmpty())
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Tidak ada barang yang dapat dipinjam saat ini.</strong><br>
+                                        Barang mungkin tidak tersedia untuk dipinjam atau stok sedang habis.
+                                        <a href="{{ route('barang.index') }}" class="alert-link">Lihat semua barang</a>
+                                    </div>
+                                @endif
                                 
                                 <!-- Info Stok -->
                                 <div id="barangInfo" class="barang-info">

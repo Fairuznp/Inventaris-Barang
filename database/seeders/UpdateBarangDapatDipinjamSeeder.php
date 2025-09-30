@@ -16,7 +16,7 @@ class UpdateBarangDapatDipinjamSeeder extends Seeder
         \App\Models\Barang::whereNull('dapat_dipinjam')
             ->orWhere('dapat_dipinjam', 0)
             ->update(['dapat_dipinjam' => true]);
-        
+
         $this->command->info('Successfully updated dapat_dipinjam status for all existing barang.');
     }
 }
