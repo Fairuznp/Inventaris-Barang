@@ -32,10 +32,15 @@ class DashboardController extends Controller
 
         // Data yang perlu fresh (barang terbaru)
         $barangTerbaru = Barang::select([
-                'id', 'nama_barang', 'kategori_id', 'lokasi_id', 'tanggal_pengadaan', 'created_at'
-            ])
+            'id',
+            'nama_barang',
+            'kategori_id',
+            'lokasi_id',
+            'tanggal_pengadaan',
+            'created_at'
+        ])
             ->with([
-                'kategori:id,nama_kategori', 
+                'kategori:id,nama_kategori',
                 'lokasi:id,nama_lokasi'
             ])
             ->latest()->take(5)->get();

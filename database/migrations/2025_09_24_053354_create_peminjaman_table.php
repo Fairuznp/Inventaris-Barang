@@ -22,7 +22,7 @@ return new class extends Migration
             $table->enum('status', ['dipinjam', 'dikembalikan', 'terlambat', 'hilang'])->default('dipinjam');
             $table->text('keterangan')->nullable();
             $table->timestamps();
-            
+
             // Indexes untuk optimasi
             $table->index(['status', 'tanggal_pinjam']);
             $table->index(['barang_id', 'status']);

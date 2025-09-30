@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class Peminjaman extends Model
 {
     protected $table = 'peminjaman';
-    
+
     protected $fillable = [
         'barang_id',
         'user_id',
@@ -61,11 +61,11 @@ class Peminjaman extends Model
     public function getInfoPeminjamAttribute()
     {
         $info = $this->nama_peminjam_lengkap;
-        
+
         if ($this->instansi_peminjam) {
             $info .= " ({$this->instansi_peminjam})";
         }
-        
+
         return $info;
     }
 
@@ -77,7 +77,7 @@ class Peminjaman extends Model
         if ($this->status !== 'dipinjam' || !$this->tanggal_kembali) {
             return false;
         }
-        
+
         return Carbon::now()->gt($this->tanggal_kembali);
     }
 
@@ -89,7 +89,7 @@ class Peminjaman extends Model
         if (!$this->is_terlambat) {
             return 0;
         }
-        
+
         return Carbon::now()->diffInDays($this->tanggal_kembali);
     }
 
@@ -107,7 +107,7 @@ class Peminjaman extends Model
     public function scopeTerlambat($query)
     {
         return $query->where('status', 'dipinjam')
-                    ->whereNotNull('tanggal_kembali')
-                    ->where('tanggal_kembali', '<', Carbon::now());
+            ->whereNotNull('tanggal_kembali')
+            ->where('tanggal_kembali', '<', Carbon::now());
     }
 }

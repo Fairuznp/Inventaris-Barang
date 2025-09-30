@@ -28,10 +28,19 @@ class BarangController extends Controller implements HasMiddleware
         $search = $request->search;
 
         $barangs = Barang::select([
-                'id', 'kode_barang', 'nama_barang', 'kategori_id', 'lokasi_id',
-                'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 
-                'jumlah_total', 'satuan', 'gambar', 'created_at'
-            ])
+            'id',
+            'kode_barang',
+            'nama_barang',
+            'kategori_id',
+            'lokasi_id',
+            'jumlah_baik',
+            'jumlah_rusak_ringan',
+            'jumlah_rusak_berat',
+            'jumlah_total',
+            'satuan',
+            'gambar',
+            'created_at'
+        ])
             ->withOptimizedRelations()
             ->search($search)
             ->latest()
@@ -83,7 +92,7 @@ class BarangController extends Controller implements HasMiddleware
         if ($request->hasFile('gambar')) {
             $file = $request->file('gambar');
             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            
+
             // Simpan dengan nama yang dioptimasi
             $validated['gambar'] = $file->storeAs('', $filename, 'gambar-barang');
         }

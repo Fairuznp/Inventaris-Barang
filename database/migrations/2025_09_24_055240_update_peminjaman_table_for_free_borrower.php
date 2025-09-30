@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama_peminjam')->after('user_id');
             $table->string('kontak_peminjam')->nullable()->after('nama_peminjam');
             $table->string('instansi_peminjam')->nullable()->after('kontak_peminjam');
-            
+
             // Buat user_id nullable untuk backward compatibility
             $table->unsignedBigInteger('user_id')->nullable()->change();
         });

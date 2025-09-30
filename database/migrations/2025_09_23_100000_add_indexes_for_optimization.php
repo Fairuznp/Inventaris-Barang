@@ -16,7 +16,7 @@ return new class extends Migration
             $table->index(['nama_barang', 'kode_barang'], 'idx_barang_search');
             $table->index(['kategori_id', 'lokasi_id'], 'idx_barang_relations');
             $table->index('created_at', 'idx_barang_created');
-            
+
             // Index untuk dashboard statistics
             $table->index(['jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat'], 'idx_barang_kondisi');
         });

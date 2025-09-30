@@ -26,7 +26,7 @@ class Barang extends Model
         if ($search) {
             return $query->where(function ($q) use ($search) {
                 $q->where('nama_barang', 'like', '%' . $search . '%')
-                  ->orWhere('kode_barang', 'like', '%' . $search . '%');
+                    ->orWhere('kode_barang', 'like', '%' . $search . '%');
             });
         }
         return $query;

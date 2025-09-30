@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('lokasi', LokasiController::class);
     Route::resource('barang', BarangController::class);
     Route::get('barang-laporan', [BarangController::class, 'cetakLaporan'])->name('barang.laporan');
-    
+
     // Peminjaman Routes
     Route::resource('peminjaman', PeminjamanController::class);
     Route::patch('peminjaman/{peminjaman}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
