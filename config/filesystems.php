@@ -56,6 +56,15 @@ return [
             'report' => false,
         ],
 
+        'foto-pemeliharaan' => [
+            'driver' => 'local',
+            'root' => public_path('foto-pemeliharaan'),
+            'url' => env('APP_URL') . '/foto-pemeliharaan',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

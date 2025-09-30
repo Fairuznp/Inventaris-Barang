@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -17,25 +18,37 @@ class RolePermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        Permission::create(['name' => 'manage barang']);
-        Permission::create(['name' => 'delete barang']);
-        Permission::create(['name' => 'view kategori']);
-        Permission::create(['name' => 'manage kategori']);
-        Permission::create(['name' => 'view lokasi']);
-        Permission::create(['name' => 'manage lokasi']);
-        Permission::create(['name' => 'view peminjaman']);
-        Permission::create(['name' => 'manage peminjaman']);
+        // Create permissions if they don't exist
+        $permissions = [
+            'manage barang',
+            'delete barang',
+            'view kategori',
+            'manage kategori',
+            'view lokasi',
+            'manage lokasi',
+            'view peminjaman',
+            'manage peminjaman',
+            'view pemeliharaan',
+            'manage pemeliharaan'
+        ];
 
-        $petugasRole = Role::create(['name' => 'petugas']);
-        $adminRole = Role::create(['name' => 'admin']);
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
-        $petugasRole->givePermissionTo([
+        // Create roles if they don't exist and assign permissions
+        $petugasRole = Role::firstOrCreate(['name' => 'petugas']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+
+        $petugasRole->syncPermissions([
             'manage barang',
             'view kategori',
             'view lokasi',
             'view peminjaman',
             'manage peminjaman',
+            'view pemeliharaan',
+            'manage pemeliharaan',
         ]);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole->syncPermissions(Permission::all());
     }
 }

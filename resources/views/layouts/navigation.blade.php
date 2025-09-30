@@ -227,6 +227,7 @@
                     ['route' => 'dashboard', 'name' => 'Dashboard'],
                     ['route' => 'barang.index', 'name' => 'Barang'],
                     ['route' => 'peminjaman.index', 'name' => 'Peminjaman'],
+                    ['route' => 'pemeliharaan.index', 'name' => 'Pemeliharaan'],
                     ['route' => 'lokasi.index', 'name' => 'Lokasi'],
                     ['route' => 'kategori.index', 'name' => 'Kategori'],
                     ['route' => 'user.index', 'name' => 'User', 'role' => 'admin'],

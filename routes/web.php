@@ -7,6 +7,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PemeliharaanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
     // Peminjaman Routes
     Route::resource('peminjaman', PeminjamanController::class);
     Route::patch('peminjaman/{peminjaman}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
+    
+    // Pemeliharaan Routes
+    Route::resource('pemeliharaan', PemeliharaanController::class);
 });
 
 require __DIR__ . '/auth.php';
