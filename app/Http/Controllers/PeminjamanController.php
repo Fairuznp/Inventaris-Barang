@@ -10,6 +10,8 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
 use Carbon\Carbon;
 
 class PeminjamanController extends Controller implements HasMiddleware
@@ -30,53 +32,45 @@ class PeminjamanController extends Controller implements HasMiddleware
         $search = $request->search;
         $status = $request->status;
 
+        // Query utama dengan optimasi
         $peminjaman = Peminjaman::select([
-            'id',
-            'barang_id',
-            'user_id',
-            'jumlah',
-            'tanggal_pinjam',
-            'tanggal_kembali',
-            'tanggal_kembali_aktual',
-            'status',
-            'keterangan'
+            'id', 'barang_id', 'user_id', 'nama_peminjam', 'kontak_peminjam', 'instansi_peminjam',
+            'jumlah', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_kembali_aktual',
+            'status', 'keterangan'
         ])
-            ->with([
-                'barang:id,nama_barang,kode_barang'
-            ])
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->whereHas('barang', function ($subq) use ($search) {
-                        $subq->where('nama_barang', 'like', '%' . $search . '%')
-                            ->orWhere('kode_barang', 'like', '%' . $search . '%');
-                    })->orWhere('nama_peminjam', 'like', '%' . $search . '%')
-                        ->orWhere('instansi_peminjam', 'like', '%' . $search . '%');
-                });
-            })
+            ->withOptimalRelations()
+            ->search($search)
             ->when($status, function ($query, $status) {
-                $query->where('status', $status);
+                $query->byStatus($status);
             })
-            ->latest()
-            ->paginate(15)
+            ->latest('tanggal_pinjam')
+            ->paginate(12)
             ->withQueryString();
 
         return view('peminjaman.index', compact('peminjaman'));
     }
 
-    /**
+        /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $barangs = Barang::select(['id', 'nama_barang', 'kode_barang', 'jumlah_baik'])
-            ->with(['peminjamanAktif:barang_id,jumlah'])
-            ->where('jumlah_baik', '>', 0)
-            ->get()
-            ->map(function ($barang) {
-                $barang->stok_tersedia = $barang->stok_baik_tersedia;
-                return $barang;
-            })
-            ->where('stok_tersedia', '>', 0);
+        // Cache dan optimasi query untuk dropdown barang
+        $barangs = CacheService::remember('barangs_available_for_loan', function () {
+            return Barang::select([
+                'id', 'nama_barang', 'kode_barang', 'jumlah_baik', 'satuan'
+            ])
+                ->with(['peminjamanAktif:barang_id,jumlah'])
+                ->where('jumlah_baik', '>', 0)
+                ->orderBy('nama_barang')
+                ->get()
+                ->map(function ($barang) {
+                    $barang->stok_tersedia = $barang->stok_baik_tersedia;
+                    return $barang;
+                })
+                ->where('stok_tersedia', '>', 0)
+                ->values(); // Reset array keys setelah filter
+        });
 
         return view('peminjaman.create', compact('barangs'));
     }

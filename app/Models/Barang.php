@@ -44,6 +44,52 @@ class Barang extends Model
     }
 
     /**
+     * Scope untuk filter berdasarkan kondisi dominan
+     */
+    public function scopeWithKondisiDominan($query, $kondisi = null)
+    {
+        if ($kondisi) {
+            switch ($kondisi) {
+                case 'baik':
+                    return $query->whereRaw('jumlah_baik >= jumlah_rusak_ringan AND jumlah_baik >= jumlah_rusak_berat');
+                case 'rusak_ringan':
+                    return $query->whereRaw('jumlah_rusak_ringan >= jumlah_baik AND jumlah_rusak_ringan >= jumlah_rusak_berat');
+                case 'rusak_berat':
+                    return $query->whereRaw('jumlah_rusak_berat >= jumlah_baik AND jumlah_rusak_berat >= jumlah_rusak_ringan');
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Scope untuk stok rendah
+     */
+    public function scopeStokRendah($query, $threshold = 10)
+    {
+        return $query->where('jumlah_total', '<', $threshold);
+    }
+
+    /**
+     * Default eager loading untuk relasi yang sering digunakan
+     */
+    protected $with = []; // Kosongkan default, gunakan explicit loading
+
+    /**
+     * Prevent N+1 queries dengan constraint
+     */
+    public function scopeWithMinimalRelations($query)
+    {
+        return $query->with([
+            'kategori' => function ($query) {
+                $query->select('id', 'nama_kategori');
+            },
+            'lokasi' => function ($query) {
+                $query->select('id', 'nama_lokasi');
+            }
+        ]);
+    }
+
+    /**
      * Accessor untuk mendapatkan total jumlah stok
      */
     public function getJumlahStokAttribute()

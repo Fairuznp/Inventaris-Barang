@@ -48,6 +48,54 @@ class Peminjaman extends Model
     }
 
     /**
+     * Scope untuk status tertentu
+     */
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    /**
+     * Scope untuk peminjaman aktif
+     */
+    public function scopeAktif($query)
+    {
+        return $query->where('status', 'dipinjam');
+    }
+
+    /**
+     * Scope untuk pencarian
+     */
+    public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('nama_peminjam', 'like', '%' . $search . '%')
+                    ->orWhere('kontak_peminjam', 'like', '%' . $search . '%')
+                    ->orWhere('instansi_peminjam', 'like', '%' . $search . '%')
+                    ->orWhereHas('barang', function ($subq) use ($search) {
+                        $subq->where('nama_barang', 'like', '%' . $search . '%')
+                            ->orWhere('kode_barang', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+        return $query;
+    }
+
+    /**
+     * Scope dengan relasi optimal
+     */
+    public function scopeWithOptimalRelations($query)
+    {
+        return $query->with([
+            'barang:id,nama_barang,kode_barang,kategori_id,lokasi_id',
+            'barang.kategori:id,nama_kategori',
+            'barang.lokasi:id,nama_lokasi',
+            'user:id,name'
+        ]);
+    }
+
+    /**
      * Accessor untuk nama peminjam (prioritas nama_peminjam atau user->name)
      */
     public function getNamaPeminjamLengkapAttribute()
@@ -91,14 +139,6 @@ class Peminjaman extends Model
         }
 
         return Carbon::now()->diffInDays($this->tanggal_kembali);
-    }
-
-    /**
-     * Scope untuk peminjaman aktif
-     */
-    public function scopeAktif($query)
-    {
-        return $query->where('status', 'dipinjam');
     }
 
     /**

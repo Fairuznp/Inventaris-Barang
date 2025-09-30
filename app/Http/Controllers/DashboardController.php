@@ -8,14 +8,14 @@ use App\Models\Kategori;
 use App\Models\Lokasi;
 use App\Models\User;
 use App\Models\Peminjaman;
-use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         // Cache data yang jarang berubah selama 60 menit
-        $statistics = Cache::remember('dashboard_statistics', 3600, function () {
+        $statistics = CacheService::remember('dashboard_statistics', function () {
             return [
                 'jumlahBarang' => Barang::count(),
                 'jumlahKategori' => Kategori::count(),

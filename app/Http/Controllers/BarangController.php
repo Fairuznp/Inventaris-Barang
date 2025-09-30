@@ -7,6 +7,8 @@ use App\Models\Kategori;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
@@ -55,8 +57,14 @@ class BarangController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        $kategori = Kategori::all();
-        $lokasi = Lokasi::all();
+        // Cache dropdown data selama 30 menit
+        $kategori = CacheService::remember('kategoris_all', function () {
+            return Kategori::select('id', 'nama_kategori')->orderBy('nama_kategori')->get();
+        });
+        
+        $lokasi = CacheService::remember('lokasis_all', function () {
+            return Lokasi::select('id', 'nama_lokasi')->orderBy('nama_lokasi')->get();
+        });
 
         $barang = new Barang();
 
@@ -111,7 +119,12 @@ class BarangController extends Controller implements HasMiddleware
      */
     public function show(Barang $barang)
     {
-        $barang->load(['kategori', 'lokasi']);
+        // Load relationships dengan select spesifik
+        $barang->load([
+            'kategori:id,nama_kategori', 
+            'lokasi:id,nama_lokasi',
+            'peminjamanAktif:id,barang_id,nama_peminjam,jumlah,tanggal_pinjam,status'
+        ]);
 
         return view('barang.show', compact('barang'));
     }
@@ -121,8 +134,14 @@ class BarangController extends Controller implements HasMiddleware
      */
     public function edit(Barang $barang)
     {
-        $kategori = Kategori::all();
-        $lokasi = Lokasi::all();
+        // Cache dropdown data
+        $kategori = CacheService::remember('kategoris_all', function () {
+            return Kategori::select('id', 'nama_kategori')->orderBy('nama_kategori')->get();
+        });
+        
+        $lokasi = CacheService::remember('lokasis_all', function () {
+            return Lokasi::select('id', 'nama_lokasi')->orderBy('nama_lokasi')->get();
+        });
 
         return view('barang.edit', compact('barang', 'kategori', 'lokasi'));
     }
@@ -185,11 +204,23 @@ class BarangController extends Controller implements HasMiddleware
      */
     public function cetakLaporan()
     {
-        $barangs = Barang::with(['kategori', 'lokasi'])->get();
+        // Optimasi query untuk laporan
+        $barangs = Barang::select([
+            'id', 'kode_barang', 'nama_barang', 'kategori_id', 'lokasi_id',
+            'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'jumlah_total',
+            'satuan', 'tanggal_pengadaan'
+        ])
+            ->with([
+                'kategori:id,nama_kategori',
+                'lokasi:id,nama_lokasi'
+            ])
+            ->orderBy('nama_barang')
+            ->get();
 
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('barang.laporan', compact('barangs'));
+        $pdf->setPaper('A4', 'landscape'); // Landscape untuk data yang banyak
 
-        return $pdf->stream('laporan-barang.pdf');
+        return $pdf->stream('laporan-barang-' . date('Y-m-d') . '.pdf');
     }
 }

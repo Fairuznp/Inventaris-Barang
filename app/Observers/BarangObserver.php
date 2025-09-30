@@ -3,24 +3,16 @@
 namespace App\Observers;
 
 use App\Models\Barang;
-use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
 
 class BarangObserver
 {
-    /**
-     * Clear cache ketika ada perubahan data barang
-     */
-    private function clearDashboardCache()
-    {
-        Cache::forget('dashboard_statistics');
-    }
-
     /**
      * Handle the Barang "created" event.
      */
     public function created(Barang $barang): void
     {
-        $this->clearDashboardCache();
+        CacheService::clearBarangRelatedCache();
     }
 
     /**
@@ -28,7 +20,7 @@ class BarangObserver
      */
     public function updated(Barang $barang): void
     {
-        $this->clearDashboardCache();
+        CacheService::clearBarangRelatedCache();
     }
 
     /**
@@ -36,6 +28,6 @@ class BarangObserver
      */
     public function deleted(Barang $barang): void
     {
-        $this->clearDashboardCache();
+        CacheService::clearBarangRelatedCache();
     }
 }
