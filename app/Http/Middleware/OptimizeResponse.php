@@ -17,10 +17,10 @@ class OptimizeResponse
         // Hanya untuk response HTML
         if ($response->headers->get('Content-Type') === 'text/html; charset=UTF-8') {
             $content = $response->getContent();
-            
+
             // Minify HTML (remove extra whitespace, newlines, comments)
             $content = $this->minifyHtml($content);
-            
+
             // Set content yang sudah diminify
             $response->setContent($content);
         }
@@ -41,7 +41,7 @@ class OptimizeResponse
             if (function_exists('gzencode')) {
                 $content = $response->getContent();
                 $compressed = gzencode($content);
-                
+
                 if ($compressed !== false && strlen($compressed) < strlen($content)) {
                     $response->setContent($compressed);
                     $response->headers->set('Content-Encoding', 'gzip');
@@ -60,16 +60,16 @@ class OptimizeResponse
     {
         // Remove HTML comments (except IE conditionals)
         $html = preg_replace('/<!--(?!\s*(?:\[if [^\]]+]|<!|>))(?:(?!-->).)*-->/s', '', $html);
-        
+
         // Remove extra whitespace
         $html = preg_replace('/\s+/', ' ', $html);
-        
+
         // Remove whitespace around tags
         $html = preg_replace('/>\s+</', '><', $html);
-        
+
         // Remove whitespace at the beginning and end
         $html = trim($html);
-        
+
         return $html;
     }
 }

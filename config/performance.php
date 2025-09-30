@@ -14,7 +14,7 @@ return [
     'cache' => [
         'enabled' => env('APP_CACHE_ENABLED', true),
         'default_ttl' => env('APP_CACHE_TTL', 1800), // 30 minutes
-        
+
         'keys' => [
             'dashboard_statistics' => env('CACHE_DASHBOARD_TTL', 3600), // 1 hour
             'kategoris_all' => env('CACHE_KATEGORIS_TTL', 1800),        // 30 minutes

@@ -61,7 +61,7 @@ class BarangController extends Controller implements HasMiddleware
         $kategori = CacheService::remember('kategoris_all', function () {
             return Kategori::select('id', 'nama_kategori')->orderBy('nama_kategori')->get();
         });
-        
+
         $lokasi = CacheService::remember('lokasis_all', function () {
             return Lokasi::select('id', 'nama_lokasi')->orderBy('nama_lokasi')->get();
         });
@@ -121,7 +121,7 @@ class BarangController extends Controller implements HasMiddleware
     {
         // Load relationships dengan select spesifik
         $barang->load([
-            'kategori:id,nama_kategori', 
+            'kategori:id,nama_kategori',
             'lokasi:id,nama_lokasi',
             'peminjamanAktif:id,barang_id,nama_peminjam,jumlah,tanggal_pinjam,status'
         ]);
@@ -138,7 +138,7 @@ class BarangController extends Controller implements HasMiddleware
         $kategori = CacheService::remember('kategoris_all', function () {
             return Kategori::select('id', 'nama_kategori')->orderBy('nama_kategori')->get();
         });
-        
+
         $lokasi = CacheService::remember('lokasis_all', function () {
             return Lokasi::select('id', 'nama_lokasi')->orderBy('nama_lokasi')->get();
         });
@@ -206,9 +206,17 @@ class BarangController extends Controller implements HasMiddleware
     {
         // Optimasi query untuk laporan
         $barangs = Barang::select([
-            'id', 'kode_barang', 'nama_barang', 'kategori_id', 'lokasi_id',
-            'jumlah_baik', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'jumlah_total',
-            'satuan', 'tanggal_pengadaan'
+            'id',
+            'kode_barang',
+            'nama_barang',
+            'kategori_id',
+            'lokasi_id',
+            'jumlah_baik',
+            'jumlah_rusak_ringan',
+            'jumlah_rusak_berat',
+            'jumlah_total',
+            'satuan',
+            'tanggal_pengadaan'
         ])
             ->with([
                 'kategori:id,nama_kategori',

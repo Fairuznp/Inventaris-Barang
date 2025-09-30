@@ -34,9 +34,18 @@ class PeminjamanController extends Controller implements HasMiddleware
 
         // Query utama dengan optimasi
         $peminjaman = Peminjaman::select([
-            'id', 'barang_id', 'user_id', 'nama_peminjam', 'kontak_peminjam', 'instansi_peminjam',
-            'jumlah', 'tanggal_pinjam', 'tanggal_kembali', 'tanggal_kembali_aktual',
-            'status', 'keterangan'
+            'id',
+            'barang_id',
+            'user_id',
+            'nama_peminjam',
+            'kontak_peminjam',
+            'instansi_peminjam',
+            'jumlah',
+            'tanggal_pinjam',
+            'tanggal_kembali',
+            'tanggal_kembali_aktual',
+            'status',
+            'keterangan'
         ])
             ->withOptimalRelations()
             ->search($search)
@@ -50,7 +59,7 @@ class PeminjamanController extends Controller implements HasMiddleware
         return view('peminjaman.index', compact('peminjaman'));
     }
 
-        /**
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -58,7 +67,11 @@ class PeminjamanController extends Controller implements HasMiddleware
         // Cache dan optimasi query untuk dropdown barang
         $barangs = CacheService::remember('barangs_available_for_loan', function () {
             return Barang::select([
-                'id', 'nama_barang', 'kode_barang', 'jumlah_baik', 'satuan'
+                'id',
+                'nama_barang',
+                'kode_barang',
+                'jumlah_baik',
+                'satuan'
             ])
                 ->with(['peminjamanAktif:barang_id,jumlah'])
                 ->where('jumlah_baik', '>', 0)

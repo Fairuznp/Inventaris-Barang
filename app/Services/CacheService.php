@@ -32,7 +32,7 @@ class CacheService
             if (is_string($keys)) {
                 $keys = [$keys];
             }
-            
+
             foreach ($keys as $key) {
                 Cache::forget($key);
             }
