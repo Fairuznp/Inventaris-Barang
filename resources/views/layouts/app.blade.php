@@ -31,7 +31,10 @@
 
         <!-- Page Content -->
         <main class="container">
-            {{ $slot }}
+            @yield('content')
+            @isset($slot)
+                {{ $slot }}
+            @endisset
         </main>
     </div>
     <script src="{{ asset('bootstrap/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

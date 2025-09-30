@@ -14,10 +14,14 @@ class LokasiSeeder extends Seeder
     public function run(): void
     {
         DB::table('lokasis')->insert([
-            ['nama_lokasi' => 'Ruang Rapat Utama', 'created_at' => now(), 'updated_at' => now()],
-            ['nama_lokasi' => 'Lobi Depan', 'created_at' => now(), 'updated_at' => now()],
-            ['nama_lokasi' => 'Gudang Arsip', 'created_at' => now(), 'updated_at' => now()],
             ['nama_lokasi' => 'Ruang Kepala Dinas', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Ruang Rapat Utama', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Gudang Arsip', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Lobi Depan', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Ruang Staff Umum', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Ruang IT', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Ruang Security', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_lokasi' => 'Parkiran', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

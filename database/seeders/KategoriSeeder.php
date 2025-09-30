@@ -18,6 +18,9 @@ class KategoriSeeder extends Seeder
             ['nama_kategori' => 'Mebel & Furniture', 'created_at' => now(), 'updated_at' => now()],
             ['nama_kategori' => 'Alat Tulis Kantor (ATK)', 'created_at' => now(), 'updated_at' => now()],
             ['nama_kategori' => 'Aset Gedung', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_kategori' => 'Kendaraan', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_kategori' => 'Peralatan Keamanan', 'created_at' => now(), 'updated_at' => now()],
+            ['nama_kategori' => 'Peralatan Kebersihan', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }

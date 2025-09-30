@@ -8,6 +8,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PemeliharaanController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,6 +35,21 @@ Route::middleware('auth')->group(function () {
 
     // Pemeliharaan Routes
     Route::resource('pemeliharaan', PemeliharaanController::class);
+
+    // Laporan Routes
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('/', [LaporanController::class, 'index'])->name('index');
+        Route::get('/kategori', [LaporanController::class, 'kategori'])->name('kategori');
+        Route::get('/lokasi', [LaporanController::class, 'lokasi'])->name('lokasi');
+        Route::get('/peminjaman', [LaporanController::class, 'peminjaman'])->name('peminjaman');
+        Route::get('/pemeliharaan', [LaporanController::class, 'pemeliharaan'])->name('pemeliharaan');
+        
+        // Export Routes
+        Route::get('/kategori/export-pdf', [LaporanController::class, 'exportKategoriPdf'])->name('kategori.export-pdf');
+        Route::get('/lokasi/export-pdf', [LaporanController::class, 'exportLokasiPdf'])->name('lokasi.export-pdf');
+        Route::get('/peminjaman/export-pdf', [LaporanController::class, 'exportPeminjamanPdf'])->name('peminjaman.export-pdf');
+        Route::get('/pemeliharaan/export-pdf', [LaporanController::class, 'exportPemeliharaanPdf'])->name('pemeliharaan.export-pdf');
+    });
 });
 
 require __DIR__ . '/auth.php';

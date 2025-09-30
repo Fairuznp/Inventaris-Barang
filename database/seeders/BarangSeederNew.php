@@ -13,8 +13,8 @@ class BarangSeederNew extends Seeder
      */
     public function run(): void
     {
-        // Truncate table first to avoid conflicts
-        DB::table('barangs')->truncate();
+        // Hapus data lama tanpa truncate untuk menghindari foreign key constraint
+        DB::table('barangs')->delete();
         
         DB::table('barangs')->insert([
             [

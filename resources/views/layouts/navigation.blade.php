@@ -230,6 +230,7 @@
                     ['route' => 'pemeliharaan.index', 'name' => 'Pemeliharaan'],
                     ['route' => 'lokasi.index', 'name' => 'Lokasi'],
                     ['route' => 'kategori.index', 'name' => 'Kategori'],
+                    ['route' => 'laporan.index', 'name' => 'Laporan'],
                     ['route' => 'user.index', 'name' => 'User', 'role' => 'admin'],
                 ];
                 @endphp
