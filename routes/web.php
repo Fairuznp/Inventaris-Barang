@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     // Peminjaman Routes
     Route::resource('peminjaman', PeminjamanController::class);
     Route::patch('peminjaman/{peminjaman}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
-    
+
     // Pemeliharaan Routes
     Route::resource('pemeliharaan', PemeliharaanController::class);
 });

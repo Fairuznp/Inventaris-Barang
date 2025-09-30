@@ -1,0 +1,90 @@
+/* Performance optimized CSS untuk pemeliharaan */
+
+/* Disable animations untuk performa */
+.pemeliharaan-container * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Lightweight card styling */
+.pemeliharaan-card {
+    background: #fafafa;
+    border: 1px solid #f3f4f6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* Simple status badges */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-dikirim { background: #dbeafe; color: #1e40af; }
+.status-dalam_perbaikan { background: #fef3c7; color: #d97706; }
+.status-menunggu_approval { background: #fed7aa; color: #ea580c; }
+.status-selesai { background: #1a1a1a; color: #fafafa; }
+.status-dibatalkan { background: #f3f4f6; color: #6b7280; }
+.status-tidak_bisa_diperbaiki { background: #fee2e2; color: #dc2626; }
+
+/* Simple jenis badges */
+.jenis-badge {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 500;
+}
+
+.jenis-rusak_ringan { background: #fef3c7; color: #d97706; }
+.jenis-rusak_berat { background: #fee2e2; color: #dc2626; }
+
+/* Lightweight stats cards */
+.stats-card {
+    background: #fafafa;
+    border: 1px solid #f3f4f6;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stats-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 5px;
+}
+
+.stats-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Remove expensive shadows and gradients */
+.btn {
+    box-shadow: none !important;
+    background: #f3f4f6 !important;
+    border: 1px solid #e5e7eb !important;
+    color: #1a1a1a !important;
+}
+
+.btn:hover {
+    background: #e5e7eb !important;
+}
+
+/* Minimal form styling */
+.form-control {
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.form-control:focus {
+    border-color: #1a1a1a;
+    outline: none;
+    box-shadow: none;
+}

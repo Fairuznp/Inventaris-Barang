@@ -85,11 +85,51 @@ class CacheService
     }
 
     /**
-     * Remember dengan cache time default
+     * Remember dengan cache time default atau custom
      */
-    public static function remember($key, callable $callback)
+    public static function remember($key, callable $callback, $ttl = null)
     {
-        $ttl = self::CACHE_KEYS[$key] ?? 1800; // Default 30 minutes
+        $ttl = $ttl ?? self::CACHE_KEYS[$key] ?? 1800; // Default 30 minutes
         return Cache::remember($key, $ttl, $callback);
+    }
+
+    /**
+     * Forget cache dengan pattern matching
+     */
+    public static function forgetMatching($pattern)
+    {
+        // Simple pattern matching untuk cache keys
+        $allKeys = [
+            'pemeliharaan_list_*',
+            'barangs_rusak_for_pemeliharaan_v2',
+            'pemeliharaan_statistics_v2'
+        ];
+
+        foreach ($allKeys as $key) {
+            if (str_contains($pattern, '*')) {
+                $basePattern = str_replace('*', '', $pattern);
+                if (str_starts_with($key, $basePattern)) {
+                    Cache::forget($key);
+                }
+            } else {
+                if ($key === $pattern) {
+                    Cache::forget($key);
+                }
+            }
+        }
+    }
+
+    /**
+     * Clear cache yang terkait dengan pemeliharaan
+     */
+    public static function clearPemeliharaanRelatedCache()
+    {
+        self::clearCache([
+            'pemeliharaan_statistics_v3',
+            'barangs_rusak_for_pemeliharaan_v2'
+        ]);
+        
+        // Clear pagination cache
+        self::forgetMatching('pemeliharaan_list_*');
     }
 }

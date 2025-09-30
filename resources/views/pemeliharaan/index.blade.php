@@ -284,10 +284,18 @@
             @endforelse
         </div>
 
-        <!-- Pagination -->
+        <!-- Pagination dengan info -->
         @if($pemeliharaan->hasPages())
-        <div class="d-flex justify-content-center mt-4">
-            {{ $pemeliharaan->links() }}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div>
+                <small class="text-muted">
+                    Menampilkan {{ $pemeliharaan->firstItem() ?: 0 }} - {{ $pemeliharaan->lastItem() ?: 0 }} 
+                    dari {{ $pemeliharaan->total() }} pemeliharaan
+                </small>
+            </div>
+            <div>
+                {{ $pemeliharaan->appends(request()->query())->simplePaginate() }}
+            </div>
         </div>
         @endif
     </div>

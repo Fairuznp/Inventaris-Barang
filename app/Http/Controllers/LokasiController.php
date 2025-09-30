@@ -66,7 +66,7 @@ class LokasiController extends Controller implements HasMiddleware
     public function show(Lokasi $lokasi)
     {
         $barangs = $lokasi->barangs()->with(['kategori'])->paginate(12);
-        
+
         return view('lokasi.show', compact('lokasi', 'barangs'));
     }
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class Pemeliharaan extends Model
@@ -72,15 +73,15 @@ class Pemeliharaan extends Model
     {
         $tahun = date('Y');
         $bulan = date('m');
-        
+
         $lastPemeliharaan = self::whereYear('created_at', $tahun)
             ->whereMonth('created_at', $bulan)
             ->orderBy('id', 'desc')
             ->first();
-        
-        $nomor = $lastPemeliharaan ? 
+
+        $nomor = $lastPemeliharaan ?
             (int) substr($lastPemeliharaan->kode_pemeliharaan, -3) + 1 : 1;
-        
+
         return 'PM-' . $tahun . $bulan . '-' . str_pad($nomor, 3, '0', STR_PAD_LEFT);
     }
 
@@ -125,9 +126,24 @@ class Pemeliharaan extends Model
     }
 
     /**
-     * Scope untuk pencarian
+     * Scope untuk pencarian yang dioptimasi
      */
     public function scopeSearch($query, $search)
+    {
+        if ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('kode_pemeliharaan', 'like', '%' . $search . '%')
+                    ->orWhere('nama_vendor', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi_kerusakan', 'like', '%' . $search . '%');
+            });
+        }
+        return $query;
+    }
+
+    /**
+     * Scope untuk pencarian dengan relasi barang (gunakan dengan hati-hati)
+     */
+    public function scopeSearchWithBarang($query, $search)
     {
         if ($search) {
             return $query->where(function ($q) use ($search) {
@@ -149,9 +165,13 @@ class Pemeliharaan extends Model
     public function scopeWithOptimalRelations($query)
     {
         return $query->with([
-            'barang:id,nama_barang,kode_barang,kategori_id,lokasi_id',
-            'barang.kategori:id,nama_kategori',
-            'barang.lokasi:id,nama_lokasi',
+            'barang' => function ($query) {
+                $query->select(['id', 'nama_barang', 'kode_barang', 'kategori_id', 'lokasi_id'])
+                    ->with([
+                        'kategori:id,nama_kategori',
+                        'lokasi:id,nama_lokasi'
+                    ]);
+            },
             'user:id,name'
         ]);
     }
@@ -180,7 +200,7 @@ class Pemeliharaan extends Model
         if (!$this->tanggal_selesai_aktual) {
             return null;
         }
-        
+
         return Carbon::parse($this->tanggal_kirim)->diffInDays(Carbon::parse($this->tanggal_selesai_aktual));
     }
 
@@ -192,7 +212,7 @@ class Pemeliharaan extends Model
         if (!$this->estimasi_biaya || !$this->biaya_aktual) {
             return null;
         }
-        
+
         return $this->biaya_aktual - $this->estimasi_biaya;
     }
 
@@ -204,7 +224,7 @@ class Pemeliharaan extends Model
         if ($this->jumlah_dipelihara <= 0) {
             return null;
         }
-        
+
         return ($this->jumlah_berhasil_diperbaiki / $this->jumlah_dipelihara) * 100;
     }
 
@@ -216,7 +236,7 @@ class Pemeliharaan extends Model
         if (!$this->estimasi_selesai || $this->status === 'selesai') {
             return false;
         }
-        
+
         return Carbon::parse($this->estimasi_selesai)->isPast();
     }
 
@@ -226,15 +246,34 @@ class Pemeliharaan extends Model
     public function getInfoVendorLengkapAttribute(): string
     {
         $info = $this->nama_vendor;
-        
+
         if ($this->pic_vendor) {
             $info .= " (PIC: {$this->pic_vendor})";
         }
-        
+
         if ($this->kontak_vendor) {
             $info .= " - {$this->kontak_vendor}";
         }
-        
+
         return $info;
+    }
+
+    /**
+     * Static method untuk mendapatkan statistik dengan query yang efisien
+     */
+    public static function getStatistics()
+    {
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        return DB::select("
+            SELECT 
+                COUNT(*) as total_pemeliharaan,
+                SUM(CASE WHEN status = 'dalam_perbaikan' THEN 1 ELSE 0 END) as dalam_perbaikan,
+                SUM(CASE WHEN status = 'menunggu_approval' THEN 1 ELSE 0 END) as menunggu_approval,
+                SUM(CASE WHEN status = 'selesai' AND MONTH(tanggal_selesai_aktual) = ? AND YEAR(tanggal_selesai_aktual) = ? THEN 1 ELSE 0 END) as selesai_bulan_ini,
+                COALESCE(SUM(CASE WHEN status = 'selesai' AND MONTH(tanggal_selesai_aktual) = ? AND YEAR(tanggal_selesai_aktual) = ? THEN biaya_aktual ELSE 0 END), 0) as total_biaya_bulan_ini
+            FROM pemeliharaan
+        ", [$currentMonth, $currentYear, $currentMonth, $currentYear])[0];
     }
 }

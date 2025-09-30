@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PemeliharaanHistory extends Model
 {
     protected $table = 'pemeliharaan_history';
-    
+
     public $timestamps = false; // Hanya menggunakan created_at
 
     protected $fillable = [
@@ -24,6 +24,9 @@ class PemeliharaanHistory extends Model
         'biaya_perubahan' => 'decimal:2',
         'created_at' => 'datetime',
     ];
+
+    // Disable updated_at timestamp
+    const UPDATED_AT = null;
 
     /**
      * Boot method untuk auto-set created_at

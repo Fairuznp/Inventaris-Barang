@@ -31,58 +31,53 @@ class PemeliharaanController extends Controller implements HasMiddleware
         $search = $request->search;
         $status = $request->status;
         $vendor = $request->vendor;
+        $perPage = $request->per_page ?: 10; // Kurangi items per page
 
-        $pemeliharaan = Pemeliharaan::select([
-            'id',
-            'barang_id',
-            'user_id',
-            'kode_pemeliharaan',
-            'jenis_kerusakan',
-            'deskripsi_kerusakan',
-            'jumlah_dipelihara',
-            'nama_vendor',
-            'pic_vendor',
-            'estimasi_biaya',
-            'biaya_aktual',
-            'tanggal_kirim',
-            'estimasi_selesai',
-            'tanggal_selesai_aktual',
-            'status',
-            'jumlah_berhasil_diperbaiki',
-            'jumlah_tidak_bisa_diperbaiki'
-        ])
-            ->withOptimalRelations()
-            ->search($search)
-            ->when($status, function ($query, $status) {
-                $query->byStatus($status);
-            })
-            ->when($vendor, function ($query, $vendor) {
-                $query->byVendor($vendor);
-            })
-            ->latest('tanggal_kirim')
-            ->paginate(12)
-            ->withQueryString();
+        // Cache key berdasarkan query parameters
+        $cacheKey = 'pemeliharaan_list_' . md5(serialize([
+            'search' => $search,
+            'status' => $status,
+            'vendor' => $vendor,
+            'page' => $request->page ?: 1,
+            'per_page' => $perPage
+        ]));
 
-        // Statistics untuk dashboard
-        $statistics = CacheService::remember('pemeliharaan_statistics', function () {
+        $pemeliharaan = CacheService::remember($cacheKey, function () use ($search, $status, $vendor, $perPage) {
+            return Pemeliharaan::select([
+                'id',
+                'barang_id',
+                'user_id',
+                'kode_pemeliharaan',
+                'jenis_kerusakan',
+                'jumlah_dipelihara',
+                'nama_vendor',
+                'estimasi_biaya',
+                'biaya_aktual',
+                'tanggal_kirim',
+                'estimasi_selesai',
+                'tanggal_selesai_aktual',
+                'status'
+            ])
+                ->withOptimalRelations()
+                ->search($search)
+                ->when($status, fn($query) => $query->byStatus($status))
+                ->when($vendor, fn($query) => $query->byVendor($vendor))
+                ->latest('tanggal_kirim')
+                ->paginate($perPage)
+                ->withQueryString();
+        }, 300); // Cache 5 menit
+
+        // Statistics dengan cache terpisah dan lebih lama
+        $statistics = CacheService::remember('pemeliharaan_statistics_v3', function () {
+            $stats = Pemeliharaan::getStatistics();
             return [
-                'total_pemeliharaan' => Pemeliharaan::count(),
-                'dalam_perbaikan' => Pemeliharaan::byStatus('dalam_perbaikan')->count(),
-                'menunggu_approval' => Pemeliharaan::byStatus('menunggu_approval')->count(),
-                'selesai_bulan_ini' => Pemeliharaan::byStatus('selesai')
-                    ->whereMonth('tanggal_selesai_aktual', now()->month)
-                    ->count(),
-                'total_biaya_bulan_ini' => Pemeliharaan::byStatus('selesai')
-                    ->whereMonth('tanggal_selesai_aktual', now()->month)
-                    ->sum('biaya_aktual'),
-                'rata_rata_durasi' => Pemeliharaan::byStatus('selesai')
-                    ->whereNotNull('tanggal_selesai_aktual')
-                    ->get()
-                    ->avg(function ($item) {
-                        return $item->durasi_pemeliharaan;
-                    }) ?? 0,
+                'total_pemeliharaan' => $stats->total_pemeliharaan,
+                'dalam_perbaikan' => $stats->dalam_perbaikan,
+                'menunggu_approval' => $stats->menunggu_approval,
+                'selesai_bulan_ini' => $stats->selesai_bulan_ini,
+                'total_biaya_bulan_ini' => $stats->total_biaya_bulan_ini,
             ];
-        });
+        }, 1800); // Cache 30 menit
 
         return view('pemeliharaan.index', compact('pemeliharaan', 'statistics'));
     }
@@ -92,23 +87,20 @@ class PemeliharaanController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        // Ambil barang yang ada kondisi rusak
-        $barangs = CacheService::remember('barangs_for_pemeliharaan', function () {
-            return Barang::select([
-                'id',
-                'nama_barang',
-                'kode_barang',
-                'jumlah_rusak_ringan',
-                'jumlah_rusak_berat'
-            ])
+        // Cache barang yang rusak dengan key yang lebih spesifik
+        $barangs = CacheService::remember('barangs_rusak_for_pemeliharaan_v2', function () {
+            return Barang::select(['id', 'nama_barang', 'kode_barang', 'jumlah_rusak_ringan', 'jumlah_rusak_berat', 'kategori_id', 'lokasi_id'])
                 ->where(function ($query) {
                     $query->where('jumlah_rusak_ringan', '>', 0)
                         ->orWhere('jumlah_rusak_berat', '>', 0);
                 })
-                ->with(['kategori:id,nama_kategori', 'lokasi:id,nama_lokasi'])
+                ->with([
+                    'kategori:id,nama_kategori',
+                    'lokasi:id,nama_lokasi'
+                ])
                 ->orderBy('nama_barang')
                 ->get();
-        });
+        }, 900); // Cache 15 menit
 
         return view('pemeliharaan.create', compact('barangs'));
     }
@@ -181,7 +173,7 @@ class PemeliharaanController extends Controller implements HasMiddleware
                 ]);
 
                 // Clear cache
-                CacheService::clearCache(['barangs_for_pemeliharaan', 'pemeliharaan_statistics']);
+                CacheService::clearPemeliharaanRelatedCache();
 
                 return redirect()->route('pemeliharaan.index')
                     ->with('success', 'Pemeliharaan berhasil dibuat dengan kode: ' . $pemeliharaan->kode_pemeliharaan);
@@ -198,11 +190,17 @@ class PemeliharaanController extends Controller implements HasMiddleware
      */
     public function show(Pemeliharaan $pemeliharaan)
     {
+        // Load relasi dengan select yang spesifik
         $pemeliharaan->load([
+            'barang:id,nama_barang,kode_barang,kategori_id,lokasi_id',
             'barang.kategori:id,nama_kategori',
             'barang.lokasi:id,nama_lokasi',
             'user:id,name',
-            'history.user:id,name'
+            'history' => function ($query) {
+                $query->select(['id', 'pemeliharaan_id', 'status_dari', 'status_ke', 'keterangan', 'biaya_perubahan', 'user_id', 'created_at'])
+                    ->with('user:id,name')
+                    ->latest();
+            }
         ]);
 
         return view('pemeliharaan.show', compact('pemeliharaan'));
@@ -292,8 +290,8 @@ class PemeliharaanController extends Controller implements HasMiddleware
                     ]);
                 }
 
-                // Clear cache
-                CacheService::clearCache(['pemeliharaan_statistics']);
+                // Clear specific caches
+                CacheService::clearPemeliharaanRelatedCache();
 
                 return redirect()->route('pemeliharaan.index')
                     ->with('success', 'Status pemeliharaan berhasil diperbarui.');
@@ -346,7 +344,7 @@ class PemeliharaanController extends Controller implements HasMiddleware
                 $pemeliharaan->delete();
 
                 // Clear cache
-                CacheService::clearCache(['barangs_for_pemeliharaan', 'pemeliharaan_statistics']);
+                CacheService::clearPemeliharaanRelatedCache();
 
                 return redirect()->route('pemeliharaan.index')
                     ->with('success', 'Pemeliharaan berhasil dihapus.');
