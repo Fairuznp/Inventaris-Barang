@@ -227,6 +227,7 @@
                     ['route' => 'dashboard', 'name' => 'Dashboard'],
                     ['route' => 'barang.index', 'name' => 'Barang'],
                     ['route' => 'peminjaman.index', 'name' => 'Peminjaman'],
+                    ['route' => 'loan-requests.index', 'name' => 'Permintaan', 'icon' => 'fas fa-clipboard-list'],
                     ['route' => 'pemeliharaan.index', 'name' => 'Pemeliharaan'],
                     ['route' => 'lokasi.index', 'name' => 'Lokasi'],
                     ['route' => 'kategori.index', 'name' => 'Kategori'],

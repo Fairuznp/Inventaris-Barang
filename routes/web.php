@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PemeliharaanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LoanRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,15 @@ Route::middleware('auth')->group(function () {
     // Peminjaman Routes
     Route::resource('peminjaman', PeminjamanController::class);
     Route::patch('peminjaman/{peminjaman}/kembalikan', [PeminjamanController::class, 'kembalikan'])->name('peminjaman.kembalikan');
+
+    // Loan Request Management Routes
+    Route::prefix('loan-requests')->name('loan-requests.')->group(function () {
+        Route::get('/', [LoanRequestController::class, 'index'])->name('index');
+        Route::get('/{loanRequest}', [LoanRequestController::class, 'show'])->name('show');
+        Route::post('/{loanRequest}/approve', [LoanRequestController::class, 'approve'])->name('approve');
+        Route::post('/{loanRequest}/reject', [LoanRequestController::class, 'reject'])->name('reject');
+        Route::get('/api/pending-count', [LoanRequestController::class, 'getPendingCount'])->name('pending-count');
+    });
 
     // Pemeliharaan Routes
     Route::resource('pemeliharaan', PemeliharaanController::class);

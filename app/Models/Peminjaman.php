@@ -13,6 +13,7 @@ class Peminjaman extends Model
     protected $fillable = [
         'barang_id',
         'user_id',
+        'request_id',
         'nama_peminjam',
         'kontak_peminjam',
         'instansi_peminjam',
@@ -45,6 +46,14 @@ class Peminjaman extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relasi ke LoanRequest
+     */
+    public function loanRequest()
+    {
+        return $this->belongsTo(LoanRequest::class, 'request_id');
     }
 
     /**
